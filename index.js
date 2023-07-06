@@ -26,7 +26,7 @@ const discord_api = axios.create({
   }
 });
 
-
+// sa aşkım
 
 
 app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
