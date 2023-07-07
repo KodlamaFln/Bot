@@ -1,5 +1,5 @@
 const aoijs = require("aoi.js");
-
+//segs
 const bot = new aoijs.AoiClient({
   token: process.env.TOKEN,
   prefix: "?",
