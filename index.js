@@ -1,113 +1,61 @@
-// deneme
-// const { clientId, guildId, token, publicKey } = require('./config.json');
-require('dotenv').config()
-const APPLICATION_ID = process.env.APPLICATION_ID 
-const TOKEN = process.env.TOKEN 
-const PUBLIC_KEY = process.env.PUBLIC_KEY || 'not set'
-const GUILD_ID = process.env.GUILD_ID 
+const aoijs = require("aoi.js");
 
-
-const axios = require('axios')
-const express = require('express');
-const { InteractionType, InteractionResponseType, verifyKeyMiddleware } = require('discord-interactions');
-
-
-const app = express();
-// app.use(bodyParser.json());
-
-const discord_api = axios.create({
-  baseURL: 'https://discord.com/api/',
-  timeout: 3000,
-  headers: {
-	"Access-Control-Allow-Origin": "*",
-	"Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-	"Access-Control-Allow-Headers": "Authorization",
-	"Authorization": `Bot ${TOKEN}`
-  }
+const bot = new aoijs.AoiClient({
+  token: process.env.TOKEN,
+  prefix: "?",
+  intents: ["MessageContent", "Guilds", "GuildMessages"],
+  events: ["onMessage", "onInteractionCreate"]
 });
 
-// sa aşkım
+const elixir = require("express")();elixir.get
+('/', (req, res) =>{res.send("R O M E O Yapımı :D");});elixir.listen(8080);
 
+const loader = new aoijs.LoadCommands(bot);
+(async () => {
+await loader.load(bot.cmd, "./komutlar/")
+})()
 
-app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
-  const interaction = req.body;
+loader.setColors({
+  walking: ["blink", "dim", "fgWhite"],
+  failedWalking: {
+    name: ["bright", "fgYellow", "underline"],
+ 
+    text: ["bright", "fgRed"]
+  },
+  typeError: {
+    command: ["bright", "fgYellow"],
+    type: ["fgYellow"],
+    text: ["bright", "fgRed"]
+  },
+  failLoad: {
+    command: ["bright", "fgMagenta"],
+    type: ["fgRed"],
+    text: ["bright", "fgRed"],
+  },
+  loaded: {
+    command: ["bright", "fgCyan"],
+    type: ["bright", "fgBlue"],
+    text: ["bright", "fgGreen"]
+  },
+ 
+})
+//////////VARİABLE//////////
+bot.variables({
+  değisken1: "değer1",
+  değişken2: "değer2"
+    }, "main")
 
-  if (interaction.type === InteractionType.APPLICATION_COMMAND) {
-    console.log(interaction.data.name)
-    if(interaction.data.name == 'yo amk '){
-      return res.send({
-        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-        data: {
-          content: `Yo ${interaction.member.user.username}!`,
-        },
-      });
-    }
-
-    if(interaction.data.name == 'dm'){
-      // https://discord.com/developers/docs/resources/user#create-dm
-      let c = (await discord_api.post(`/users/@me/channels`,{
-        recipient_id: interaction.member.user.id
-      })).data
-      try{
-        // https://discord.com/developers/docs/resources/channel#create-message
-        let res = await discord_api.post(`/channels/${c.id}/messages`,{
-          content:'Yo! I got your slash command. I am not able to respond to DMs just slash commands.',
-        })
-        console.log(res.data)
-      }catch(e){
-        console.log(e)
-      }
-
-      return res.send({
-        // https://discord.com/developers/docs/interactions/receiving-and-responding#responding-to-an-interaction
-        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-        data:{
-          content:'👍'
-        }
-      });
-    }
-  }
-
-});
-
-
-
-app.get('/register_commands', async (req,res) =>{
-  let slash_commands = [
-    {
-      "name": "yo",
-      "description": "replies with Yo!",
-      "options": []
-    },
-    {
-      "name": "dm",
-      "description": "sends user a DM",
-      "options": []
-    }
-  ]
-  try
-  {
-    // api docs - https://discord.com/developers/docs/interactions/application-commands#create-global-application-command
-    let discord_response = await discord_api.put(
-      `/applications/${APPLICATION_ID}/guilds/${GUILD_ID}/commands`,
-      slash_commands
-    )
-    console.log(discord_response.data)
-    return res.send('commands have been registered')
-  }catch(e){
-    console.error(e.code)
-    console.error(e.response?.data)
-    return res.send(`${e.code} error from discord`)
-  }
+bot.readyCommand({
+      channel: "",
+      code: `
+$log[$userTag[$clientID] Olarak Hazır!]`
+   }) 
+//////////OYNUYOR KISMI//////////
+bot.status({
+  text: `R O M E O#1881`,
+  type: `LISTENING`,
+  status: "dnd",
+  time: 15
 })
 
-
-app.get('/', async (req,res) =>{
-  return res.send('Follow documentation ')
-})
-
-
-app.listen(8999, () => {
-
-})
-
+//Elixir Development'e Ait Çalanı Afiyetle Yerim! :D
